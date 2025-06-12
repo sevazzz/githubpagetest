@@ -1,0 +1,17 @@
+.body{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.titulo {
+text-align: center;
+color: white;
+margin-top: 2%;
+}
+.rectangulo{
+text-align: center;
+background-color: white;
+height: 90vh;
+margin: 5%;
+margin-top: 1%;
+border-radius: 10%;
+}
