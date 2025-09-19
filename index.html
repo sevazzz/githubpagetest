@@ -123,10 +123,7 @@
       <input type="number" id="empleados" />
     </label>
     <label>Días de reparto:
-      <select id="dias">
-        <option value="15">15 días</option>
-        <option value="30">30 días</option>
-      </select>
+      <input type="number" id="dias" placeholder="Ingresa el número de días" />
     </label>
     <label>¿Hay empleados con incapacidad o vacaciones?
       <select id="hayFaltas" onchange="mostrarFaltas()">
@@ -196,8 +193,8 @@
       const empleadosTotales = parseInt(document.getElementById('empleados').value);
       const dias = parseInt(document.getElementById('dias').value);
 
-      if (isNaN(propina) || isNaN(empleadosTotales) || isNaN(dias)) {
-        alert('Todos los campos deben estar llenos');
+      if (isNaN(propina) || isNaN(empleadosTotales) || isNaN(dias) || dias <= 0) {
+        alert('Todos los campos deben estar llenos y los días deben ser mayores a 0');
         return;
       }
 
@@ -212,24 +209,33 @@
         const totalDescuento = +(e.dias * valorPorDia).toFixed(2);
         descuento += totalDescuento;
         const totalEmpleado = +(dias - e.dias) * valorPorDia;
-        detalleFaltas += `<div class="detalleEmpleado">${e.nombre}: $${totalEmpleado.toFixed(2)} (-$${totalDescuento.toFixed(2)})</div>`;
+        detalleFaltas += `<div class="detalleEmpleado"><strong>${e.nombre}</strong>: $${totalEmpleado.toFixed(2)} (descuento: -$${totalDescuento.toFixed(2)})</div>`;
       });
 
       const totalSinFaltas = +(propina - descuento).toFixed(2);
       const empleadosSinFalta = empleadosTotales - empleadosConFalta.length;
       const repartoSinFalta = empleadosSinFalta > 0 ? +(totalSinFaltas / empleadosSinFalta).toFixed(2) : 0;
 
-      document.getElementById('resultados').innerHTML = `
-        <p>Valor por día trabajado: $${valorPorDia.toFixed(2)}</p>
-        <br>
-        <p>Total general por empleado: $${totalGeneralPorEmpleado.toFixed(2)}</p>
-        <br>
-        <p><strong>6. Total a repartir empleados con falta:</strong> $${propina.toFixed(2)} (-$${descuento.toFixed(2)})</p>
-        ${detalleFaltas}
-        <br>
-        <p><strong>7. Total a repartir empleados sin falta:</strong> $${totalSinFaltas.toFixed(2)} | $${repartoSinFalta.toFixed(2)} por empleado (${empleadosSinFalta} empleados)</p>
-      `;
+// Informe más claro y detallado
+document.getElementById('resultados').innerHTML = `
+  <h3>📊 Informe de Reparto</h3>
+  <p><strong>Días de reparto:</strong> ${dias} día(s)</p>
+  <hr style="margin-bottom:1rem;">
+  
+  <p><strong>Valor por día trabajado:</strong> $${valorPorDia.toFixed(2)}</p>
+  <p><strong>Total estimado por empleado (sin faltas):</strong> $${totalGeneralPorEmpleado.toFixed(2)}</p>
+  <hr style="margin-bottom:1rem;">
+  
+  <h4>👥 Empleados con faltas</h4>
+  <p>Total descontado: $${descuento.toFixed(2)}</p>
+  ${detalleFaltas || '<p>Ningún empleado con faltas.</p>'}
+  <hr style="margin-bottom:1rem;">
+  
+  <h4>✅ Empleados sin faltas</h4>
+  <p>Total a repartir: $${totalSinFaltas.toFixed(2)}</p>
+  <p>Cada uno recibe: $${repartoSinFalta.toFixed(2)} (entre ${empleadosSinFalta} empleado(s))</p>
+`;
     }
-  </script>
+    </script>
 </body>
 </html>
